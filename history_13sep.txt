@@ -1,0 +1,69 @@
+    1  date
+    2  who ami
+    3  whoami
+    4  docker -version
+    5  pwd
+    6  clear
+    7  top
+    8  df
+    9  clear
+   10  java -version
+   11  mvn -version
+   12  ll
+   13  ls -ltr
+   14  pwd
+   15  vi index.html
+   16  exit
+   17  lab-configure 
+   18  cat  /usr/local/etc/ocp4.config
+   19  git clone https://github.com/jignesh2212git/DO180-apps
+   20  cd DO180-apps/
+   21  ls -ltr
+   22  git status
+   23  git checkout -b testbranch
+   24  ls -ltr
+   25  echo "DO180" > TEST.TXT
+   26  ll
+   27  git add.
+   28  git add .
+   29  git commit -am "DO180"
+   30  git push --set-upstream origin testbranch
+   31  echo date >> TEST.TXT
+   32  cat TEST.TXT 
+   33  echo $date >> TEST.TXT
+   34  cat TEST.TXT 
+   35  git add .
+   36  git commit -am "test"
+   37  git push
+   38  podman -version
+   39  podman --version
+   40  date
+   41  date >> TEST.TXT 
+   42  git add .
+   43  git commit -am "My Comments"
+   44  git push
+   45  lab manage-networking start
+   46  podman login registry.redhat.io
+   47  podman run --name mysqldb-port -d -v /home/student/local/mysql:/var/lib/mysql/data -p 13306:3306 -e MYSQL_USER=user1 -e MYSQL_PASSWORD=mypa55 -e MYSQL_DATABASE=items -e MYSQL_ROOT_PASSWORD=r00tpa55 registry.redhat.io/rhel8/mysql-80:1
+   48  podman images
+   49  podman ps
+   50  mysql -uuser1 -h 127.0.0.1 -pmypa55 -P13306 items < /home/student/DO180/labs/manage-networking/db.sql
+   51  podman exec -it mysqldb-port mysql -uroot items -e "SELECT * FROM Item"
+   52  podman ps
+   53  podman exec -it mysqldb-port bash
+   54  lab manage-networking stop
+   55  lab manage-networking finish
+   56  podman ps
+   57  clear
+   58  lab container-create start
+   59  podman run --name mysql-basic -e MYSQL_USER=user1 -e MYSQL_PASSWORD=mypa55 -e MYSQL_DATABASE=items -e MYSQL_ROOT_PASSWORD=r00tpa55 -d registry.redhat.io/rhel8/mysql-80:1
+   60  podman ps
+   61  ll
+   62  podman exec -it mysql-basic /bin/bash
+   63  lab container-create finish
+   64  exit
+   65  history
+   66  ll
+   67  cd DO180-apps/
+   68  ll
+   69  history > history_13sep.txt
