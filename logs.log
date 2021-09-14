@@ -1,0 +1,29 @@
+[student@workstation ~]$ rm -rf local
+[student@workstation ~]$ sudo mkdir -pv local/mysql
+mkdir: created directory 'local'
+mkdir: created directory 'local/mysql'
+[student@workstation ~]$ podman unshare chown 27:27 /home/student/local/mysql
+chown: changing ownership of '/home/student/local/mysql': Operation not permitted
+Error: exit status 1
+[student@workstation ~]$ podman  unshare^Chown 27:27 /home/student/local/mysql
+[student@workstation ~]$ sudo rm -rf local
+[student@workstation ~]$ mkdir -pv local/mysql
+mkdir: created directory 'local'
+mkdir: created directory 'local/mysql'
+[student@workstation ~]$ podman unshare chown 27:27 /home/student/local/mysql
+[student@workstation ~]$ podman run --name persist-db -d -v /home/student/local/mysql:/var/lib/mysql/data:Z -e MYSQL_USER=user1 -e MYSQL_PASSWORD=mypa55 -e MYSQL_DATABASE=items -e MYSQL_ROOT_PASSWORD=r00tpa55 registry.redhat.io/rhel8/mysql-80:1
+Error: error creating container storage: the container name "persist-db" is already in use by "6163f4f66bfd50997a3a2c5f32a1829476286f5126cb82735256f5d156b06c0e". You have to remove that container to be able to reuse that name.: that name is already in use
+[student@workstation ~]$ podman rm persist-db
+6163f4f66bfd50997a3a2c5f32a1829476286f5126cb82735256f5d156b06c0e
+[student@workstation ~]$ podman run --name persist-db -d -v /home/student/local/mysql:/var/lib/mysql/data:Z -e MYSQL_USER=user1 -e MYSQL_PASSWORD=mypa55 -e MYSQL_DATABASE=items -e MYSQL_ROOT_PASSWORD=r00tpa55 registry.redhat.io/rhel8/mysql-80:1
+79614c76dd0b8a522721a10bbb056cf8ce876e9e14f642ed055f89ff04b8d64c
+[student@workstation ~]$ podman ps
+CONTAINER ID  IMAGE                                COMMAND     CREATED        STATUS            PORTS  NAMES
+79614c76dd0b  registry.redhat.io/rhel8/mysql-80:1  run-mysqld  4 seconds ago  Up 3 seconds ago         persist-db
+e03b9097d60f  registry.redhat.io/rhel8/mysql-80:1  run-mysqld  2 minutes ago  Up 2 minutes ago         persist-db1
+[student@workstation ~]$ podman exec -it persist-db bash
+bash-4.4$ id
+uid=27(mysql) gid=27(mysql) groups=27(mysql),0(root)
+bash-4.4$ exit
+exit
+
