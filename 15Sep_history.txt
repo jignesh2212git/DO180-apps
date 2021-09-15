@@ -1,0 +1,39 @@
+    1  history
+    2  clear
+    3  echo "Creating a Basic Apache Container Image"
+    4  lab dockerfile-create start
+    5  vi Do180cd ../labs/dockerfile-create/Containerfile
+    6  cd ..
+    7  vi DO180/labs/dockerfile-create/Containerfile
+    8  cd DO180/labs/dockerfile-create/
+    9  ls -ltr
+   10  podman build -t do180/apache . --layers=false
+   11  podman images
+   12  podman image rm quay.io/jignesh2212/do180-custom-httpd
+   13  podman images
+   14  podman image rm quay.io/jignesh2212/do180-custom-httpd:v1.0
+   15  podman images
+   16  podman run --name lab-apache -d -p 10080:80 do180/apache
+   17  podman ps
+   18  curl localhost:10080
+   19  lab dockerfile-create finish
+   20  clear
+   21  echo "Creating Custom Container Images 126"
+   22  lab dockerfile-review start 
+   23  cd ..
+   24  cd cd /home/student/DO180/labs/dockerfile-review/
+   25  cd /home/student/DO180/labs/dockerfile-review/
+   26  ll
+   27  cat Containerfile 
+   28  vi Containerfile 
+   29  podman build -t do180/custom-apache --layers=false
+   30  podman build -t do180/custom-apache . --layers=false
+   31  podman images
+   32  podman run -d --name containerfile -p 20080:8080 do180/custom-apache
+   33  curl localhost:20080
+   34  lab dockerfile-review grade
+   35  cd ..
+   36  lab dockerfile-review finish
+   37  history
+   38  cd DO180-apps/
+   39  history > 15Sep_history.txt
