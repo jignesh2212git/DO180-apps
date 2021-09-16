@@ -1,0 +1,114 @@
+    1  clear
+    2  lab openshift-resources start
+    3  cd ..
+    4  source /usr/local/etc/ocp4.config
+    5  cat /usr/local/etc/ocp4.config
+    6  oc login -u ${RHT_OCP4_DEV_USER} -p ${RHT_OCP4_DEV_PASSWORD} ${RHT_OCP4_MASTER_API}
+    7  oc new-project ${RHT_OCP4_DEV_USER}-mysql-openshift
+    8  oc new-app -template=mysql-persistent -p MYSQL_USER=user1 -p MYSQL_PASSWORD=mypa55 -p MYSQL_DATABASE=testdb -p MYSQL_ROOT_PASSWORD=r00tpa55 -p VOLUME_CAPACITY=10Gi
+    9  oc new-app  --template=mysql-persistent  -p MYSQL_USER=user1 -p MYSQL_PASSWORD=mypa55 -p MYSQL_DATABASE=testdb  -p MYSQL_ROOT_PASSWORD=r00tpa55 -p VOLUME_CAPACITY=10Gi
+   10  oc status
+   11  clear
+   12  oc get pods
+   13  oc describe pod mysql-1-wds7d
+   14  oc get svc
+   15  clear
+   16  oc describe service mysql
+   17  oc get pvc
+   18  oc describe pvc/mysql
+   19  clear
+   20  oc port-forward mysql-1-wds7d 3306:3306
+   21  clear
+   22  oc delete project ${RHT_OCP4_DEV_USER}-mysql-openshift
+   23  lab openshift-resources finish
+   24  lab openshift-routes start
+   25  source /usr/local/etc/ocp4.config
+   26  oc login -u ${RHT_OCP4_DEV_USER} -p ${RHT_OCP4_DEV_PASSWORD} ${RHT_OCP4_MASTER_API}
+   27  oc new-project ${RHT_OCP4_DEV_USER}-route
+   28  oc new-app  --image-stream php:7.3~https://github.com/${RHT_OCP4_GITHUB_USER}/DO180-apps  --context-dir php-helloworld --name php-helloworld
+   29  clear
+   30  oc status
+   31  oc get pods -w
+   32  oc logs -f bc/php-helloworld
+   33  oc get pods
+   34  oc logs -f php-helloworld-6bc8694bcb-xnb8v 
+   35  clear
+   36  oc describe svc/php-helloworld
+   37  oc expose svc/php-helloworld
+   38  oc describe route
+   39  curl php-helloworld-${RHT_OCP4_DEV_USER}-route.${RHT_OCP4_WILDCARD_DOMAIN}
+   40  oc delete route/php-helloworld
+   41  oc expose svc/php-helloworld  --name=${RHT_OCP4_DEV_USER}-xyz
+   42  curl ${RHT_OCP4_DEV_USER}-xyz-${RHT_OCP4_DEV_USER}-route.${RHT_OCP4_WILDCARD_DOMAIN}
+   43  podman ps
+   44  lab openshift-routes finish 
+   45  clear
+   46  echo "Source-to-Image"
+   47  lab openshift-s2i start
+   48  lab openshift-s2i finish
+   49  lab openshift-s2i start
+   50  clear
+   51  cd DO180-apps/
+   52  git checkout master
+   53  git checkout -b s2i
+   54  git push -u origin s2i
+   55  cd php-helloworld/
+   56  ll
+   57  cat index.php 
+   58  cd ..
+   59  source /usr/local/etc/ocp4.config
+   60  oc login -u ${RHT_OCP4_DEV_USER} -p ${RHT_OCP4_DEV_PASSWORD} ${RHT_OCP4_MASTER_API}
+   61  oc new-project ${RHT_OCP4_DEV_USER}-s2i
+   62  oc new-app php:7.3 --name=php-helloworld https://github.com/${RHT_OCP4_GITHUB_USER}/DO180-apps#s2i --context-dir php-helloworld
+   63  oc status
+   64  oc get pods
+   65  oc logs --all-containers -f php-helloworld-1-build
+   66  oc describe deployment/php-helloworld
+   67  oc expose service php-helloworld --name ${RHT_OCP4_DEV_USER}-helloworld
+   68  clear
+   69  oc get route -o jsonpath='{..spec.host}{"\n"}'
+   70  curl curl -s ${RHT_OCP4_DEV_USER}-helloworld-${RHT_OCP4_DEV_USER}-s2i.${RHT_OCP4_WILDCARD_DOMAIN}
+   71  firefox  ${RHT_OCP4_DEV_USER}-helloworld-${RHT_OCP4_DEV_USER}-s2i.${RHT_OCP4_WILDCARD_DOMAIN} &
+   72  cd php-helloworld/
+   73  ll
+   74  vi index.php 
+   75  cd ..
+   76  git add .
+   77  git commit
+   78  git push
+   79  git push origin s2i
+   80  oc start-build php-helloworld
+   81  oc logs php-helloworld-2-build -f
+   82  clear
+   83  oc get pods
+   84  oc get route
+   85  clear
+   86  ll
+   87  clear
+   88  lab openshift-review start
+   89  source /usr/local/etc/ocp4.config
+   90  oc login -u ${RHT_OCP4_DEV_USER} -p {RHT_OCP4_DEV_PASSWORD} ${RHT_OCP4_MASTER_API}
+   91  oc login -u ${RHT_OCP4_DEV_USER} -p ${RHT_OCP4_DEV_PASSWORD} ${RHT_OCP4_MASTER_API}
+   92  oc projects
+   93  lab openshift-s2i finish
+   94  lab openshift-review finish
+   95  lab openshift-review start
+   96  clear
+   97  oc new-project ${RHT_OCP4_DEV_USER}-ocp
+   98  oc new-app php:7.3~https://github.com/RedHatTraining/DO180-apps --context-dir temps --name temps
+   99  oc status
+  100  oc get all
+  101  oc logs temps-1-build 
+  102  oc gets pods -w
+  103  oc get pods -w
+  104  oc expose svc/temps
+  105  oc get route
+  106  clear
+  107  oc get route
+  108  lab openshift-review grade
+  109  lab openshift-review finish
+  110  cd ../DO180-apps/
+  111  checkout testbranch
+  112  git checkout testbranch
+  113  ll
+  114  history > 16Sep_history.txt
